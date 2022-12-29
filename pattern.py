@@ -96,31 +96,38 @@ class Pattern:
         '''
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         ax.imshow(self.pattern, cmap=self.cmap, vmin=0, vmax=1)
-        
+
         return fig
 
-    def plot_swatch(self) -> plt.Figure:
+    def plot_swatch(self, widht_sts: int, height_sts: int) -> plt.Figure:
         '''
         Plots a swatch
+
+        Params:
+        width_sts (int)  -> the number of stitches across the swatch
+        height_sts (int) -> the number of stitches down the swatch
 
         Returns: the matplotlib figure
         '''
 
         fig, ax = plt.subplots(1, 1, figsize=(5, 5))
 
-        # Plot a 30x20 grid of white squares with black borders with a "V" written in the center
-        for row, col in itertools.product(range(20), range(30)):
-            ax.add_patch(plt.Rectangle((col, row), 1, 1, facecolor="white", edgecolor="black"))
-            ax.text(col + 0.5, row + 0.5, "V", ha="center", va="center", color="black")
-            
+        # Plot a grid of white squares with black borders with a "V" written in the center
+        for row, col in itertools.product(range(height_sts), range(widht_sts)):
+            ax.add_patch(plt.Rectangle((col, row), 1, 1,
+                         facecolor="white", edgecolor="black"))
+            ax.text(col + 0.5, row + 0.5, "V", ha="center",
+                    va="center", color="black")
+
         # Extend the limits to include the border
-        ax.set_xlim(-0.2, 30.2)
-        ax.set_ylim(-0.2, 20.2)
+        ax.set_xlim(-0.2, widht_sts + 0.2)
+        ax.set_ylim(-0.2, height_sts + 0.2)
         ax.set_xlabel("10 cm")
         ax.set_ylabel("10 cm")
         ax.set_xticks([])
-        ax.set_yticks([])        
-        plt.subplots_adjust(left=0.05, bottom=0.05, right=0.95, top=0.95, wspace=0, hspace=0)
+        ax.set_yticks([])
+        plt.subplots_adjust(left=0.05, bottom=0.05,
+                            right=0.95, top=0.95, wspace=0, hspace=0)
 
         return fig
 
