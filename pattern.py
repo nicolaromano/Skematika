@@ -13,21 +13,19 @@ from skimage.transform import resize
 
 
 class Pattern:
-    def __init__(self, width: int, height: int, pattern_name: str = "") -> None:
+    def __init__(self, width_sts: int, height_sts: int) -> None:
         '''
         Initialize a pattern object
 
         Params:
-        width (int)        -> the width of the pattern
-        height (int)       -> the height of the pattern
-        pattern_name (str) -> the name of the pattern
+        width_sts (int)    -> the width of the pattern
+        height_sys (int)   -> the height of the pattern
 
         Returns: None
         '''
-        self.width = width
-        self.height = height
-        self.pattern_name = pattern_name
-        self.pattern = np.zeros((height, width), dtype=np.uint8)
+        self.width = width_sts
+        self.height = height_sts
+        self.pattern = np.zeros((height_sts, width_sts), dtype=np.uint8)
         # The palette is a 2D array of RGB values
         # Default palette is black (points) and white (background)
         self.palette = np.array(
@@ -35,14 +33,15 @@ class Pattern:
         # The corresponding Matplotlib colormap
         self.cmap = ListedColormap(self.palette)
 
-    def checkerboard(self) -> None:
+    def test_pattern(self) -> None:
         '''
-        Create a checkerboard pattern
+        Create a test pattern
 
         Returns: None
         '''
+
         for row, col in itertools.product(range(self.height), range(self.width)):
-            if (row + col) % 2 == 0:
+            if (row + col) % 10 == 0:
                 self.pattern[row][col] = 1
 
     def pattern_from_image(self, image_path: str, n_colors: int) -> None:
@@ -88,36 +87,47 @@ class Pattern:
             # Set the pixel to the closest color
             self.pattern[row][col] = closest_color_index
 
-    def plot_pattern(self) -> plt.Figure:
+    def plot_pattern(self, fig: plt.Figure = None) -> plt.Figure:
         '''
         Plot the pattern
 
-        Returns: The matplotlib figure
+        Params:
+        fig (matplotlib.figure) -> the figure to plot on
+
+        Returns: The matplotlib figure. If fig is None, a new figure is created
         '''
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+        if fig is None:
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+        else:
+            ax = fig.gca()  
+
         ax.imshow(self.pattern, cmap=self.cmap, vmin=0, vmax=1)
 
         return fig
 
-    def plot_swatch(self, widht_sts: int, height_sts: int) -> plt.Figure:
+    def plot_swatch(self, widht_sts: int, height_sts: int, fig: plt.Figure = None) -> plt.Figure:
         '''
         Plots a swatch
 
         Params:
         width_sts (int)  -> the number of stitches across the swatch
         height_sts (int) -> the number of stitches down the swatch
+        fig (matplotlib.figure) -> the figure to plot on. If None, a new figure is created
 
         Returns: the matplotlib figure
         '''
 
-        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+        if fig is None:
+            fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+        else:
+            ax = fig.gca()
 
         # Plot a grid of white squares with black borders with a "V" written in the center
         for row, col in itertools.product(range(height_sts), range(widht_sts)):
             ax.add_patch(plt.Rectangle((col, row), 1, 1,
                          facecolor="white", edgecolor="black"))
             ax.text(col + 0.5, row + 0.5, "V", ha="center",
-                    va="center", color="black")
+                    va="center", color="gray", fontsize=8)
 
         # Extend the limits to include the border
         ax.set_xlim(-0.2, widht_sts + 0.2)
@@ -131,18 +141,18 @@ class Pattern:
 
         return fig
 
-    def __str__(self):
+    def __str__(self) -> str:  # sourcery skip: avoid-builtin-shadow
         '''
         Print the pattern
 
-        Returns: None
+        Returns: string representation of the pattern
         '''
 
-        print(self.pattern_name)
-        for row in range(self.height):
-            for col in range(self.width):
-                if self.pattern[row][col] == 0:
-                    print("o", end=" ")
-                else:
-                    print("x", end=" ")
-            print()
+        str = f"A {self.width} x {self.height} pattern\n"
+        # for row in range(self.height):
+        #     for col in range(self.width):
+        #         str += "o" if self.pattern[row][col] == 0 else " "
+        #     str += "\n"
+
+        return str
+            
